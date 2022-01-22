@@ -4,6 +4,8 @@ const cors = require('cors')
 const httpError = require('http-errors')
 const app = express();
 const authRoutes = require("./routes/auth.routes");
+const { signJWT } = require('./helpers/jwtSign.helper');
+const { verifyJWT } = require('./helpers/jwtVerify.helper');
 const port = process.env.PORT || 8080
 
 // database connection
@@ -38,4 +40,19 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log("Auth service listening on port 8080")
 })
+
+
+// signJWT({ _id: 1914034 })
+// .then((res) => {
+//     console.log(res)
+//     return verifyJWT(res)
+// })
+// .then((res1)=>{
+//     console.log(res1)
+// })
+// .catch((err)=>{
+//     console.log('error',err)
+// })
+
+
 
