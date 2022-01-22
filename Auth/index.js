@@ -1,22 +1,25 @@
 require('dotenv').config()
-const express = require("express");
+const express = require("express")
 const cors = require('cors')
 const httpError = require('http-errors')
-const app = express();
-const authRoutes = require("./routes/auth.routes");
-const { signJWT } = require('./helpers/jwtSign.helper');
-const { verifyJWT } = require('./helpers/jwtVerify.helper');
+const app = express()
+const authRoutes = require("./routes/auth.routes")
+const cookieParser = require('cookie-parser')
 const port = process.env.PORT || 8080
 
 // database connection
 require('./configs/mongodb.config')
 
+//redis connection
+require('./configs/redis.config')
+
 // middlewares
-app.use(express.static("public"));
-app.use(express.json());
+app.use(express.static("public"))
+app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-app.use('/api', authRoutes);
+app.use('/api', authRoutes)
 
 
 //Invalid route

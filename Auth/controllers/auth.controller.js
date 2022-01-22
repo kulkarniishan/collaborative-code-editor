@@ -1,5 +1,6 @@
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
+const httpError = require('http-errors')
 
 // error handling
 const handleErrors = (err) => {
@@ -27,6 +28,7 @@ const handleErrors = (err) => {
   }
   return errors;
 };
+
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
   return jwt.sign({ id }, "dummy value", { expiresIn: maxAge });
@@ -41,10 +43,8 @@ module.exports = {
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(201).json({ user: user._id });
-    } catch (err) {
-      const errors = handleErrors(err);
-      console.log(errors);
-      res.status(400).json({ errors });
+    } catch (error) {
+      next(httpError.BadRequest(error))
     }
   },
   login: async (req, res, next) => {
@@ -55,13 +55,17 @@ module.exports = {
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(200).json({ user: user._id });
-    } catch (err) {
-      const errors = handleErrors(err);
-      res.status(400).json({ errors });
+    } catch (error) {
+      next(httpError.BadRequest(error))
     }
   },
   logout: (req, res, next) => {
-    res.cookie("jwt", "", { maxAge: 1 });
+    try {
+      res.cookie("jwt", "", { maxAge: 0 });
+    }
+    catch {
+      next(httpError.BadRequest(error))
+    }
   },
   authorized: async (req, res, next) => {
 
