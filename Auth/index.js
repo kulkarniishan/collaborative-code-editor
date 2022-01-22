@@ -1,25 +1,41 @@
+require('dotenv').config()
 const express = require("express");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
+const cors = require('cors')
+const httpError = require('http-errors')
 const app = express();
 const authRoutes = require("./routes/auth.routes");
-// middleware
-app.use(express.static("public"));
-app.use(express.json());
-app.use(cookieParser());
+const port = process.env.PORT || 8080
 
 // database connection
-const dbURI = "mongodb+srv://harsh:12345@cluster0.1xawz.mongodb.net/node-auth";
-mongoose
-  .connect(dbURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then((result) => {
-    app.listen(3000);
-    console.log("Listening on port 3000");
-  })
-  .catch((err) => console.log(err));
+require('./configs/mongodb.config')
 
-// routes
-app.use(authRoutes);
+// middlewares
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(cors())
+app.use('/api', authRoutes);
+
+
+//Invalid route
+app.use(async (req, res, next) => {
+    next(httpError.NotFound('This route does not exist'))
+})
+
+
+//error handling
+app.use((err, req, res, next) => {
+    res.status(err.status || 500)
+    res.send({
+        error: {
+            status: err.status || 500,
+            message: err.message,
+        },
+    })
+})
+
+
+app.listen(port, () => {
+    console.log("Auth service listening on port 8080")
+})
+
