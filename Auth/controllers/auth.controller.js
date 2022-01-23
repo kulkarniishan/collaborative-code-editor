@@ -1,6 +1,6 @@
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
-const httpError = require('http-errors')
+const httpError = require("http-errors");
 
 // error handling
 const handleErrors = (err) => {
@@ -42,9 +42,13 @@ module.exports = {
       const user = await User.create({ email, password, name, avatar });
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-      res.status(201).json({ user: user._id });
+      res.status(201).json({
+        status: "201",
+        message: "Registered Successfully",
+        user: { name, email, avatar },
+      });
     } catch (error) {
-      next(httpError.BadRequest(error))
+      next(httpError.BadRequest(error));
     }
   },
   login: async (req, res, next) => {
@@ -54,23 +58,28 @@ module.exports = {
       const user = await User.login(email, password);
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-      res.status(200).json({ user: user._id });
+      res.status(200).json({
+        status: "200",
+        message: "Logged in Successfully",
+        user: {
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        },
+      });
     } catch (error) {
-      next(httpError.BadRequest(error))
+      next(httpError.BadRequest(error));
     }
   },
   logout: (req, res, next) => {
     try {
       res.cookie("jwt", "", { maxAge: 0 });
-    }
-    catch {
-      next(httpError.BadRequest(error))
+      res
+        .status(200)
+        .json({ status: "200", message: "Logged out Successfully" });
+    } catch {
+      next(httpError.BadRequest(error));
     }
   },
-  authorized: async (req, res, next) => {
-
-  }
-}
-
-
-
+  authorized: async (req, res, next) => {},
+};
