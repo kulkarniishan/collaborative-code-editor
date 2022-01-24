@@ -1,8 +1,8 @@
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const createHttpError = require("http-errors");
-const { signJWT } = require("../helpers/jwtSign.helper")
-const { verifyJWT } = require("../helpers/jwtVerify.helper")
+const { signJWT } = require("../helpers/jwtSign.helper");
+const { verifyJWT } = require("../helpers/jwtVerify.helper");
 
 // error handling
 // const handleErrors = (err) => {
@@ -38,8 +38,8 @@ const maxAge = 3 * 24 * 60 * 60 * 1000;
 const cookieOptions = {
   httpOnly: true,
   maxAge: maxAge,
-  signed: true
-}
+  signed: true,
+};
 
 module.exports = {
   register: async (req, res, next) => {
@@ -48,7 +48,7 @@ module.exports = {
     try {
       const user = await User.create({ email, password, name, avatar });
       const token = await signJWT({ _id: user._id });
-      console.log(token)
+      console.log(token);
       res.cookie("jwt", token, cookieOptions);
       res.status(201).json({
         status: "201",
@@ -57,12 +57,16 @@ module.exports = {
       });
     } catch (error) {
       if (error.code === 11000)
-        return next(createHttpError.Conflict("User Already exists with the provided credentials"))
+        return next(
+          createHttpError.Conflict(
+            "User Already exists with the provided credentials"
+          )
+        );
 
       if (error.errors.email || error.errors.password)
         return next(createHttpError.UnprocessableEntity("Invalid Credentials"));
 
-      next(createHttpError.InternalServerError("An Error occured"))
+      next(createHttpError.InternalServerError("An Error occured"));
     }
   },
   login: async (req, res, next) => {
@@ -74,7 +78,8 @@ module.exports = {
 
       res
         .cookie("jwt", token, cookieOptions)
-        .status(200).json({
+        .status(200)
+        .json({
           status: "200",
           message: "Logged in Successfully",
           user: {
@@ -89,14 +94,13 @@ module.exports = {
   },
   logout: (req, res, next) => {
     try {
-      res.cookie("jwt", "", { maxAge: 0 })
+      res
+        .cookie("jwt", "", { maxAge: 0 })
         .status(200)
         .json({ status: "200", message: "Logged out Successfully" });
     } catch {
       next(createHttpError.BadRequest(error));
     }
   },
-  authorized: async (req, res, next) => {
-
-  },
+  authorized: async (req, res, next) => {},
 };
