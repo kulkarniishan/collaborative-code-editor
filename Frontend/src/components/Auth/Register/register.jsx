@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 function Register() {
     
     return (
-        <div className="">
+        <div className="bg-transparent">
              <div className="space-y-4">
                 <div className="row-span-1  py-2">
                     <input className="shadow appearance-none border rounded w-75 ml-6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="Enter registered Email"  />
