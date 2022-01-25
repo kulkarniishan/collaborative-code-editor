@@ -6,8 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
 let schema = yup.object().shape({
-  userEmail: yup.string().email().required(),
-  userPassword: yup.string().min(6).required(),
+  email: yup.string().email().required(),
+  password: yup.string().min(6).max(8).required(),
 });
 
 function LogIn() {
@@ -18,6 +18,11 @@ function LogIn() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const onSubmit=(data)=>{
+    console.log(data);
+  }
+  console.log(errors);
 
   return (
     <div className="container grid grid-rows-6 grid-flow-col content-center gap-4 px-5 my-auto">
@@ -32,31 +37,35 @@ function LogIn() {
         </p>
       </div>
       <div className="row-span-4">
-        <div className="container grid grid-rows-6 grid-flow-col content-center gap-2 my-auto">
-          <div className="row-span-2  py-2 mx-auto">
-            <input
-              className="shadow appearance-none border rounded w-96 ml-6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="userEmail"
-              type="text"
-              placeholder="Registered Email address"
-            />
-          </div>
-          <div className="row-span-2 items-center py-2  mx-auto">
-            <input
-              className="shadow appearance-none border rounded w-96 ml-6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="userPassword"
-              type="password"
-              placeholder="Password"
-            />
-          </div>
-          <div className="row-span-2 items-center py-2 mx-auto">
-            <input
-              className="bg-emerald-500 border-2 border-emerald-500 hover:bg-white hover:text-emerald-500 text-white font-bold py-2 px-10 rounded w-25"
-              type="submit"
-              value="Login"
-            />
-          </div>
-        </div>
+        <form className="container grid grid-rows-6 grid-flow-col content-center gap-2 my-auto" onSubmit={handleSubmit(onSubmit)} autoComplete="on">
+            <div className="row-span-2 items-center py-2 mx-auto">
+              <input
+                className={`shadow appearance-none border rounded w-96 ml-6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors&&errors.email?'border-red-500':''}`}
+                id="email"
+                type="text"
+                placeholder="Enter your Email address"
+                {...register("email")}
+              />
+              {errors&&errors.email?<p class="text-red-500 text-xs italic w-96 ml-6 py-2 px-3">{errors.email.message}</p>:<></>}
+            </div>
+            <div className="row-span-2 items-center py-2 mx-auto">
+              <input
+                className={`shadow appearance-none border rounded w-96 ml-6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors&&errors.password?'border-red-500':''}`}
+                id="password"
+                type="password"
+                placeholder="Enter your Password"
+                {...register("password")}
+              />
+              {errors&&errors.password?<p class="text-red-500 text-xs italic w-96 ml-6 py-2 px-3">{errors.password.message}</p>:<></>}
+            </div>
+            <div className="row-span-2 items-center py-2 mx-auto">
+              <input
+                className="bg-emerald-500 border-2 border-emerald-500 hover:bg-white hover:text-emerald-500 text-white font-bold py-2 px-10 rounded-full w-25"
+                type="submit"
+                value="Login"
+              />
+            </div>
+        </form>
       </div>
     </div>
   );
