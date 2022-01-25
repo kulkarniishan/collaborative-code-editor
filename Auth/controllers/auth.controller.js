@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const createHttpError = require("http-errors");
 const { signJWT } = require("../helpers/jwtSign.helper");
 const { verifyJWT } = require("../helpers/jwtVerify.helper");
-
+const { redisClient } = require("../configs/redis.config");
 // error handling
 // const handleErrors = (err) => {
 //   let errors = { email: "", password: "" };
@@ -48,9 +48,9 @@ module.exports = {
     try {
       const user = await User.create({ email, password, name, avatar });
       const token = await signJWT({ _id: user._id });
-      console.log(token);
-      res.cookie("jwt", token, cookieOptions);
-      res.status(201).json({
+
+      await redisClient.set(token, "", { EX: maxAge / 10 }); // value is in seconds be careful!!
+      res.cookie("jwt", token, cookieOptions).status(201).json({
         status: "201",
         message: "Registered Successfully",
         user: { name, email, avatar },
@@ -66,7 +66,7 @@ module.exports = {
       if (error.errors.email || error.errors.password)
         return next(createHttpError.UnprocessableEntity("Invalid Credentials"));
 
-      next(createHttpError.InternalServerError("An Error occured"));
+      next(createHttpError.InternalServerError("An Error occurred"));
     }
   },
   login: async (req, res, next) => {
@@ -74,8 +74,10 @@ module.exports = {
 
     try {
       const user = await User.login(email, password);
+
       const token = await signJWT({ _id: user._id });
 
+      await redisClient.set(token, "", { EX: maxAge / 10 }); // value is in seconds be careful!!
       res
         .cookie("jwt", token, cookieOptions)
         .status(200)
@@ -92,13 +94,15 @@ module.exports = {
       next(createHttpError.UnprocessableEntity());
     }
   },
-  logout: (req, res, next) => {
+  logout: async (req, res, next) => {
     try {
+      await verifyJWT(req.signedCookies.jwt);
+      await redisClient.del(req.signedCookies.jwt);
       res
         .cookie("jwt", "", { maxAge: 0 })
         .status(200)
         .json({ status: "200", message: "Logged out Successfully" });
-    } catch {
+    } catch (error) {
       next(createHttpError.BadRequest(error));
     }
   },

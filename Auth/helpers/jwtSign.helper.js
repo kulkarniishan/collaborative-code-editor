@@ -9,16 +9,20 @@ module.exports = {
   signJWT: async (payload) => {
     return new Promise((resolve, reject) => {
       if (payload && "_id" in payload) {
-        jsonwebtoken.sign(payload, PUB_KEY, { expiresIn: expiresIn }, (error, signedToken) => {
-          if (error) {
-            reject(error)
-            return
+        jsonwebtoken.sign(
+          payload,
+          PUB_KEY,
+          { expiresIn: expiresIn },
+          (error, signedToken) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve(signedToken);
+            return;
           }
-          resolve(signedToken)
-          return
-        })
-      }
-      else reject("Payload not provided");
+        );
+      } else reject("Payload not provided");
     });
   },
 };

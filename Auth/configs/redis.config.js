@@ -6,7 +6,7 @@ const connect = async () => {
   try {
     redisClient = createClient(); //Default port 6379
     await redisClient.connect();
-    await redisClient.flushAll("ASYNC");
+    // await redisClient.flushAll("ASYNC");
     console.log("Redis connected!!");
   } catch (e) {
     console.log(e);
@@ -14,3 +14,5 @@ const connect = async () => {
 };
 
 connect();
+
+module.exports = { redisClient };
