@@ -1,10 +1,13 @@
-import React from 'react';
-import LogIn from './components/Auth/LogIn/logIn';
+import React from "react";
+import { Route, Routes} from "react-router-dom";
+import Auth from "./components/Auth/Auth";
 
 function App() {
   return (
     <div className="App">
-      <LogIn/>
+      <Routes>
+        <Route path="/"  element={<Auth/>} />
+      </Routes>
     </div>
   );
 }
