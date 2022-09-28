@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
+import { Route, Routes} from "react-router-dom";
+import Auth from "./components/Auth/Auth";
 
 function App() {
   return (
     <div className="App">
-      <h1 className="text-3xl font-bold underline bg-neutral-400">
-      Hello world!
-      </h1>
+      <Routes>
+        <Route path="/"  element={<Auth/>} />
+      </Routes>
     </div>
   );
 }

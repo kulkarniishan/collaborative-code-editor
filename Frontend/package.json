@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^2.8.8",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.25.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.4",
@@ -21,7 +25,8 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4"
+    "workbox-streams": "^5.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,5 +51,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-react-app": "^7.0.0"
   }
 }
