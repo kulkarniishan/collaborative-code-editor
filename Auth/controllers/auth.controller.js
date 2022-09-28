@@ -43,6 +43,7 @@ const cookieOptions = {
 
 module.exports = {
   register: async (req, res, next) => {
+    console.log(req.body)
     const { email, password, name, avatar } = req.body;
 
     try {
@@ -56,6 +57,7 @@ module.exports = {
         user: { name, email, avatar },
       });
     } catch (error) {
+      console.log(error)
       if (error.code === 11000)
         return next(
           createHttpError.Conflict(
@@ -106,5 +108,10 @@ module.exports = {
       next(createHttpError.BadRequest(error));
     }
   },
-  authorized: async (req, res, next) => {},
+  getUser: async (req, res, next) => {
+
+  },
+  authorized: async (req, res, next) => {
+
+  },
 };
